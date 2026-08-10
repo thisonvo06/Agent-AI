@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Scientist 原型 · 基于国产开源大模型的科学假设生成系统</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">AI<span>S</span></div>
+    <div class="brand-text">
+      <h1>AI Scientist 原型系统</h1>
+      <p>基于国产开源大模型（Qwen / 阿里云百炼）的多智能体科学假设生成闭环</p>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="mode-pill" id="modePill">
+      <span class="dot dot-offline"></span>
+      <span id="modeText">离线演示模式</span>
+    </div>
+    <button class="btn btn-ghost" id="btnSettings">模型配置</button>
+    <a class="btn btn-ghost" href="https://bailian.console.aliyun.com/" target="_blank" rel="noreferrer">百炼平台</a>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-tab="arch">① 可视化流程框架</button>
+  <button class="tab" data-tab="chat">② AI 议题问答 Agent</button>
+  <button class="tab" data-tab="pipe">③ 假设生成流水线</button>
+  <button class="tab" data-tab="report">④ 科学假设与研究计划</button>
+</nav>
+
+<main>
+
+<!-- ================= TAB 1 : 架构 ================= -->
+<section class="panel-tab active" id="tab-arch">
+
+  <div class="section-head">
+    <h2>项目总体流程框架</h2>
+    <p>输入「领域问题 + 数据/文献」，经四层十一段智能体流水线，输出结构化、可溯源、可验证的《科学假设与研究计划》。点击任意节点查看职责说明。</p>
+  </div>
+
+  <div class="arch-wrap">
+    <div class="arch-lane">
+      <div class="lane-label lane-in">输入层<span>Input</span></div>
+      <div class="lane-body">
+        <div class="node node-io" data-node="in1">领域问题描述</div>
+        <div class="node node-io" data-node="in2">文献 / 论文 PDF</div>
+        <div class="node node-io" data-node="in3">多模态实测数据</div>
+        <div class="node node-io" data-node="in4">规则 / 法规约束</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow"><span></span></div>
+
+    <div class="arch-lane">
+      <div class="lane-label lane-core">认知层<span>Cognition</span></div>
+      <div class="lane-body">
+        <div class="node node-core" data-node="S1"><b>S1</b> 问题理解 Agent</div>
+        <div class="node node-core" data-node="S2"><b>S2</b> 文献挖掘与事实提取</div>
+        <div class="node node-core" data-node="S3"><b>S3</b> 知识整合与图谱构建</div>
+        <div class="node node-core" data-node="S4"><b>S4</b> 跨域关联发现</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow"><span></span></div>
+
+    <div class="arch-lane">
+      <div class="lane-label lane-gen">生成层<span>Generation</span></div>
+      <div class="lane-body">
+        <div class="node node-gen" data-node="S5"><b>S5</b> 假设生成（归纳+演绎）</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow"><span></span></div>
+
+    <div class="arch-lane">
+      <div class="lane-label lane-check">校验层<span>Verification · 三重闸门</span></div>
+      <div class="lane-body">
+        <div class="node node-check" data-node="S6"><b>S6</b> 双辩论智能体对抗</div>
+        <div class="node node-check" data-node="S7"><b>S7</b> 原文溯源校验</div>
+        <div class="node node-check" data-node="S8"><b>S8</b> 因果量化检验</div>
+        <div class="node node-check" data-node="S9"><b>S9</b> 人在回路复核</div>
+      </div>
+      <div class="loopback">未通过 → 回传重写（最多 3 轮迭代）</div>
+    </div>
+
+    <div class="arch-arrow"><span></span></div>
+
+    <div class="arch-lane">
+      <div class="lane-label lane-out">输出层<span>Output</span></div>
+      <div class="lane-body">
+        <div class="node node-out" data-node="S10"><b>S10</b> 《科学假设与研究计划》10 字段</div>
+        <div class="node node-out" data-node="S11"><b>S11</b> 评分自检 + 可复现工件</div>
+      </div>
+    </div>
+
+    <div class="arch-base">
+      <div class="base-title">支撑层 · Infrastructure</div>
+      <div class="base-items">
+        <div class="base-item" data-node="B1">Qwen 基座模型<small>百炼 API · qwen-plus / max</small></div>
+        <div class="base-item" data-node="B2">文献向量库<small>切片 + 嵌入 + 溯源索引</small></div>
+        <div class="base-item" data-node="B3">约束 Prompt 层<small>相关≠因果 · 场景限定 · 禁绝对化</small></div>
+        <div class="base-item" data-node="B4">统计检验工具箱<small>相关性 / 显著性 / 效应量</small></div>
+        <div class="base-item" data-node="B5">运行留痕与复现<small>全链路日志 + JSON/MD 导出</small></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3 id="nodeTitle">点击上方节点查看职责</h3>
+      <div id="nodeDesc" class="node-desc">
+        <p class="muted">该框架对应赛题四大能力项：文献挖掘与事实提取、逻辑驱动的假设生成、论证可行与多轮迭代、智能体思辨与人在回路。</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>评分标准对照（总分 100）</h3>
+      <table class="score-table">
+        <thead><tr><th>维度</th><th>分值</th><th>本框架对应模块</th></tr></thead>
+        <tbody>
+          <tr><td>科学价值 · 创新性与自洽</td><td>20</td><td>S4 跨域关联发现 + S5 假设生成</td></tr>
+          <tr><td>科学价值 · 可落地验证</td><td>20</td><td>S8 因果量化检验 + 实验设计字段</td></tr>
+          <tr><td>技术深度 · 多智能体协作</td><td>15</td><td>S6 双辩论对抗 + S9 人在回路</td></tr>
+          <tr><td>技术深度 · 多模态数据处理</td><td>15</td><td>S2/S3 文献+数据双通道整合</td></tr>
+          <tr><td>应用潜力 · 场景支撑</td><td>10</td><td>选题域适配 + 场景限定约束</td></tr>
+          <tr><td>应用潜力 · 成果转化</td><td>10</td><td>S10 研究计划 + 专利/论文映射</td></tr>
+          <tr><td>应用潜力 · 可复现性</td><td>10</td><td>B5 全链路留痕 + 一键导出</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>关键模块的实现要点</h3>
+    <div class="mod-grid" id="modGrid"></div>
+  </div>
+</section>
+
+<!-- ================= TAB 2 : 问答 ================= -->
+<section class="panel-tab" id="tab-chat">
+  <div class="chat-layout">
+    <aside class="topic-side">
+      <h3>人工智能选题库</h3>
+      <p class="muted small">来自赛题选题板块 118–125，点击直接提问</p>
+      <div id="topicList" class="topic-list"></div>
+      <div class="side-tip">
+        <b>提示</b>
+        <span>问答支持任意人工智能相关问题；命中选题时会调用内置证据库作答，并可一键转入假设生成流水线。</span>
+      </div>
+    </aside>
+
+    <div class="chat-main">
+      <div class="chat-scroll" id="chatScroll">
+        <div class="msg msg-ai">
+          <div class="avatar">AI</div>
+          <div class="bubble">
+            <p>你好，我是 <b>AI Scientist 议题问答 Agent</b>。我内置了赛题「人工智能」板块 118–125 号共 8 个前沿议题的证据库（含真实文献索引），可以：</p>
+            <ul>
+              <li>回答这些议题的现状、共识、争议与技术瓶颈</li>
+              <li>给出带文献编号的溯源引用，区分「已验证 / 有争议 / 研究空白」</li>
+              <li>把任意议题转入多智能体流水线，产出可验证的科学假设</li>
+            </ul>
+            <p class="muted">左侧点选议题，或直接输入你的问题。</p>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <textarea id="chatInput" rows="1" placeholder="例如：量子人工智能真的能模拟人脑吗？瓶颈在哪里？"></textarea>
+        <button class="btn btn-primary" id="btnSend">发送</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 3 : 流水线 ================= -->
+<section class="panel-tab" id="tab-pipe">
+  <div class="pipe-head card">
+    <div class="pipe-head-left">
+      <label>研究议题</label>
+      <select id="pipeTopic"></select>
+    </div>
+    <div class="pipe-head-left">
+      <label>迭代上限</label>
+      <select id="pipeIter">
+        <option value="1">1 轮</option>
+        <option value="2" selected>2 轮</option>
+        <option value="3">3 轮</option>
+      </select>
+    </div>
+    <div class="pipe-head-left">
+      <label>反方证据阈值</label>
+      <select id="pipeThreshold">
+        <option value="2">2 条判片面</option>
+        <option value="3" selected>3 条判片面</option>
+        <option value="4">4 条判片面</option>
+      </select>
+    </div>
+    <div class="pipe-actions">
+      <button class="btn btn-primary" id="btnRun">▶ 运行流水线</button>
+      <button class="btn btn-ghost" id="btnReset">重置</button>
+    </div>
+  </div>
+
+  <div class="pipe-layout">
+    <div class="stage-rail" id="stageRail"></div>
+    <div class="stage-detail card" id="stageDetail">
+      <div class="empty-state">
+        <div class="empty-icon">⚗</div>
+        <h3>流水线待运行</h3>
+        <p class="muted">选择议题后点击「运行流水线」，11 个智能体阶段将依次执行，实时展示辩论、溯源与统计校验过程。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 4 : 报告 ================= -->
+<section class="panel-tab" id="tab-report">
+  <div class="report-toolbar card">
+    <div>
+      <h2 id="reportTitle">尚未生成研究计划</h2>
+      <p class="muted small" id="reportMeta">请先在「假设生成流水线」中运行一次任务</p>
+    </div>
+    <div class="pipe-actions">
+      <button class="btn btn-ghost" id="btnExportMd">导出 Markdown</button>
+      <button class="btn btn-ghost" id="btnExportJson">导出 JSON</button>
+      <button class="btn btn-ghost" id="btnPrint">打印 / PDF</button>
+    </div>
+  </div>
+  <div id="reportBody"></div>
+</section>
+
+</main>
+
+<!-- ============ 设置弹窗 ============ -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <h3>模型配置（Qwen · 阿里云百炼）</h3>
+    <p class="muted small">留空则运行在<b>离线演示模式</b>：全部推理由内置证据库 + 本地统计引擎驱动，不联网也可完整演示闭环。填入百炼 API Key 后切换为<b>真实大模型模式</b>。</p>
+    <label>API Key（sk-...）</label>
+    <input type="password" id="inpKey" placeholder="DashScope / 百炼 API Key" />
+    <label>模型</label>
+    <select id="inpModel">
+      <option value="qwen-plus">qwen-plus（推荐，均衡）</option>
+      <option value="qwen-max">qwen-max（最强推理）</option>
+      <option value="qwen-turbo">qwen-turbo（最快）</option>
+      <option value="qwen3-max">qwen3-max</option>
+    </select>
+    <label>接口地址</label>
+    <input type="text" id="inpBase" value="https://dashscope.aliyuncs.com/compatible-mode/v1" />
+    <p class="muted small">浏览器直连若被 CORS 拦截，请运行 <code>node server.js</code> 并把接口地址改为 <code>/api</code>，由本地代理转发（密钥不出本机）。</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="btnTest">测试连通</button>
+      <span id="testResult" class="small"></span>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost" id="btnClearKey">清除</button>
+      <button class="btn btn-primary" id="btnSaveKey">保存</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/refs.js"></script>
+<script src="js/kb.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/llm.js"></script>
+<script src="js/pipeline.js"></script>
+<script src="js/render.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
