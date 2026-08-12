@@ -674,10 +674,4 @@ Output: {
 ## 10. 参考论文 (References)
 [系统生成假设所引用的真实文献列表，严禁虚构]
 ```
-
 ---
-
-## 参考文件
-
-- [AI Scientis比赛方案.md](file:///e:/project/AIScientist/science/prototype/AI%20Scientis比赛方案.md) — 赛题官方要求
-- [项目流程.md](file:///e:/project/AIScientist/science/prototype/项目流程.md) — Agent与千问协作关系及项目执行流程
